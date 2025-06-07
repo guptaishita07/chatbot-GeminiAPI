@@ -15,26 +15,16 @@ const ChatAI = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                role: 'user',
-                parts: [{ text: input }]
-              }
-            ]
-          })
-        }
-      );
+      const response = await fetch('http://localhost:3000/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: input }) // Sending user's message
+      });
 
       const data = await response.json();
-      const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
+      const botReply = data.reply || 'No response from server';
       setMessages((prev) => [...prev, { type: 'bot', text: botReply }]);
     } catch (err) {
       console.error('Error:', err);
@@ -45,51 +35,48 @@ const ChatAI = () => {
   };
 
   return (
-  <div className="chat-wrapper">
-    <div className="container">
-      {/* Top Header - Always Visible */}
-      <div className="fixed-header">
-        <div className="header">Chat AI</div>
-        <div className="sub-header">Welcome to Chat AI! 👋</div>
-      </div>
+    <div className="chat-wrapper">
+      <div className="container">
+        <div className="fixed-header">
+          <div className="header">Chat AI</div>
+          <div className="sub-header">Welcome to Chat AI! 👋</div>
+        </div>
 
-      {/* Conditional Welcome Info - Hidden after conversation starts */}
-      {messages.length === 0 && (
-        <>
-          <p className="description">I'm here to help you with anything you'd like to know. You can ask me about:</p>
-          <div className="buttons">
-            <button className="btn yellow">💡 General knowledge</button>
-            <button className="btn purple">🔧 Technical questions</button>
-            <button className="btn pink">📝 Writing assistance</button>
-            <button className="btn orange">🧠 Problem solving</button>
-          </div>
-        </>
-      )}
+        {messages.length === 0 && (
+          <>
+            <p className="description">I'm here to help you with anything you'd like to know. You can ask me about:</p>
+            <div className="buttons">
+              <button className="btn yellow">💡 General knowledge</button>
+              <button className="btn purple">🔧 Technical questions</button>
+              <button className="btn pink">📝 Writing assistance</button>
+              <button className="btn orange">🧠 Problem solving</button>
+            </div>
+          </>
+        )}
 
-      <div className="chat-box">
-        {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.type}`}>
-            <span>{msg.text}</span>
-          </div>
-        ))}
-        {loading && <div className="loading">Thinking...</div>}
-      </div>
+        <div className="chat-box">
+          {messages.map((msg, index) => (
+            <div key={index} className={`message ${msg.type}`}>
+              <span>{msg.text}</span>
+            </div>
+          ))}
+          {loading && <div className="loading">Thinking...</div>}
+        </div>
 
-      <div className="input-container">
-        <input
-          type="text"
-          className="input"
-          placeholder="Ask anything..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-        />
-        <button className="send-button" onClick={handleSend}>Send</button>
+        <div className="input-container">
+          <input
+            type="text"
+            className="input"
+            placeholder="Ask anything..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          />
+          <button className="send-button" onClick={handleSend}>Send</button>
+        </div>
       </div>
     </div>
-  </div>
-);
-
+  );
 };
 
 export default ChatAI;
