@@ -3,6 +3,6 @@ import { checkFirst, logControl, unlogControl, recordChat, getChatLog} from "../
 
 const router = Router();
 
-router.route("/chat").post(checkFirst, logControl , unlogControl , recordChat , getChatLog );
+router.route("/chat").post(checkFirst, logControl , unlogControl , recordChat , getChatLog ); // write the functions in same order as in orignal file because they are middleware functions and they will be executed in the order they are written here
 
 export default router;
