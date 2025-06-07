@@ -38,13 +38,11 @@ const ChatAI = () => {
   return (
     <div className="chat-wrapper">
       <div className="container">
-        {/* Top Header - Always Visible */}
         <div className="fixed-header">
           <div className="header">Chat AI</div>
           <div className="sub-header">Welcome to Chat AI! 👋</div>
         </div>
 
-        {/* Conditional Welcome Info - Hidden after conversation starts */}
         {messages.length === 0 && (
           <>
             <p className="description">I'm here to help you with anything you'd like to know. You can ask me about:</p>
