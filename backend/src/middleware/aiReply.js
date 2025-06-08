@@ -1,4 +1,4 @@
-import { getGeminiResponse } from '../ai/geminiHandler.js';
+import { getGeminiResponse } from "../Controllers/geminiHandler.js";
 
 export const getAIResponse = async (req, res) => {
   const { message } = req.body;
@@ -10,6 +10,5 @@ export const getAIResponse = async (req, res) => {
   const aiReply = await getGeminiResponse(message);
   res.status(200).json({ reply: aiReply });
   console.log("AI reply sent:", aiReply);
-  
   
 };

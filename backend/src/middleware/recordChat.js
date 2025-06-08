@@ -1,5 +1,9 @@
+import { getGeminiResponse } from '../Controllers/geminiHandler.js';
+import { uploadToIPFS } from "../Controllers/ipfsHandler.js";
+
 let loggingActive = false;
 const chatLog = [];
+
 
 export const checkFirst = (req, res, next) => {
   const { message } = req.body;
@@ -43,15 +47,25 @@ export const unlogControl = (req, res, next) => {
   next();
 };
 
-export const recordChat = (req, res, next) => {
+export const recordChat = async (req, res, next) => {
   const { message } = req.body;
+  const aiReply = await getGeminiResponse(message);
 
   if (req.loggingActive && message) {
     chatLog.push({ message, timestamp: new Date() });
+    chatLog.push({ aiReply , timestamp: new Date()}); 
     console.log("Chat logged:", message);
     // res.status(200).json({ message: "Chat recorded." }); //should use return here to stop further processing but we want to continue to next middleware
   }
 
+  try {
+      const cid = await uploadToIPFS(chatLog)
+      console.log("Stored current log at CID:", cid)
+      req.chatCID = cid // You can use this in the response or next middleware
+    } catch (err) {
+      console.error("Failed to store chat log in IPFS")
+    }
+  
 
   next();
 };
