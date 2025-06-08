@@ -56,7 +56,7 @@ export const recordChat = async (req, res, next) => {
     chatLog.push({ aiReply , timestamp: new Date()}); 
     console.log("Chat logged:", message);
     // res.status(200).json({ message: "Chat recorded." }); //should use return here to stop further processing but we want to continue to next middleware
-  }
+  
 
   try {
       const cid = await uploadToIPFS(chatLog)
@@ -65,7 +65,7 @@ export const recordChat = async (req, res, next) => {
     } catch (err) {
       console.error("Failed to store chat log in IPFS")
     }
-  
+  }
 
   next();
 };
